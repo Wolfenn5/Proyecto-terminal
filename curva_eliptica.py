@@ -18,4 +18,4 @@ try:
     clave_publica.verify(firma, hash_mensaje)
     print("Firma verificada correctamente.")
 except:
-    print("Firma no válida.")
+    print("Firma invalida.")
