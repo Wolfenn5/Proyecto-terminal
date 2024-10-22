@@ -5,7 +5,7 @@ from cryptography.hazmat.primitives.asymmetric import padding
 
 
 """
-revisar mgf1 por entrada de la semilla
+Para PT3, revisar mgf1 por entrada de la semilla
 concatenacion de hashes hasta la longitud de la mascara y
 mascara resultante con la semilla para el padding OAEP
 
