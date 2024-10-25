@@ -31,18 +31,30 @@ for e in range(2, phi_n):
     if (mcd(e, phi_n)) == 1:
         posibles_e.append(e)
 print(f"Los {phi_n} valores posibles que se pueden tomar para e son:", posibles_e)
-e=7 # tomando 7
+e=7 # tomando 7 para e
+
 
 # paso 5: calcular d (inverso modular) 
 d=mod_inverse(e,phi_n)
 
 if d:
-    # claves generadas
     clave_publica=(e,n)
     clave_privada=(d,n)
     
-    # mostrando las claves
-    print("\nLa clave publica {e,n} consta de: ",clave_publica)
-    print("La clave privada {d,n} consta de: ",clave_privada)
+    # mostrando las claves RSA generadas
+    print("\n\nLa clave publica {e,n} consta de: ", clave_publica)
+    print("La clave privada {d,n} consta de: ", clave_privada)
 else:
     print("no se encontro el inverso modular de e respecto a phi(n)")
+
+
+# cifrar y descifrar mensajes
+mensaje_claro= 88
+print("\n\nEl mensaje claro es: ", mensaje_claro)
+# cifrado con clave publica {e,n}
+mensaje_cifrado= pow(mensaje_claro, e, n)  # C= (M^e) mod n
+print("El mensaje cifrado es: ", mensaje_cifrado)
+
+# Descifrado con clave privada {d,n}
+mensaje_descifrado= pow(mensaje_cifrado, d, n)  # M= (C^d) mod n   =   ((M^e)^d) mod n   =   (M^(e*d)) mod n
+print("El mensaje descifrado es: ", mensaje_descifrado)
