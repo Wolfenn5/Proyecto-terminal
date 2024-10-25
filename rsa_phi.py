@@ -40,8 +40,8 @@ d=mod_inverse(e,phi_n)
 print("\nEl valor de d es: ", d)
 
 if d:
-    clave_publica=(e,n)
-    clave_privada=(d,n)
+    clave_publica=(e,n) # e es el exponente de cifrado
+    clave_privada=(d,n) # d es el exponente de descifrado
     
     # mostrando las claves RSA generadas
     print("\n\nLa clave publica {e,n} consta de: ", clave_publica)
