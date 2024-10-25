@@ -1,4 +1,4 @@
-from sympy import mod_inverse # biblioteca para MCD
+from sympy import mod_inverse # biblioteca para MCD e inverso modular
 
 # funcion para MCD (maximo comun divisor con algoritmo de euclides)
 def mcd(a,b):
