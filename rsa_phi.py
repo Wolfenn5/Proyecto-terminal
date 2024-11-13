@@ -21,7 +21,7 @@ print(f"El valor de n={p}*{q} es: {n}\n")
 
 
 # paso 3: calcular la funcion de euler phi(n)
-phi_n= (p-1)*(q-1) # 1008 coprimos para n=1073
+phi_n= (p-1)*(q-1) # "1008" coprimos para n=1073
 print(f"El valor de phi(n)=({p}-1)*({q}-1) es: {phi_n}\n")
 
 
