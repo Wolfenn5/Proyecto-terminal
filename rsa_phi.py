@@ -33,11 +33,11 @@ for e in range(2, phi_n):
 print(f"Los {phi_n} valores posibles que se pueden tomar para e son:", posibles_e)
 # e = posibles_e[0] # toma el primer valor de la lista
 e=19 # tomando 19 para e
-
+# e=65537 # valor que el NIST sugiere
 
 # paso 5: calcular d (inverso modular) 
 d=mod_inverse(e,phi_n)
-print("\nEl valor de d es: ", d)
+print("\nEl valor de d (inverso modular) es: ", d)
 
 if d:
     clave_publica=(e,n) # e es el exponente de cifrado
