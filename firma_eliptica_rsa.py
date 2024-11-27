@@ -1,48 +1,6 @@
-from cryptography.hazmat.primitives.asymmetric import rsa, padding
 from cryptography.hazmat.primitives import hashes
 from cryptography.hazmat.backends import default_backend
 from ecdsa import SigningKey, VerifyingKey, NIST384p  # biblioteca ecdsa
-
-
-
-
-
-# generar claves rsa
-clave_privada_rsa= rsa.generate_private_key(
-    public_exponent=65537, # constante de biblioteca estandarizado por el NIST: (p−1)(q−1) para exponente de cifrado y descifrado
-    key_size=2048,
-    backend=default_backend()
-)
-clave_publica_rsa= clave_privada_rsa.public_key()
-
-
-# cifrar firma ecdsa con RSA
-def cifrar_rsa(clave_publica_rsa, firma_ecdsa):
-    firma_ecdsa_cifrada= clave_publica_rsa.encrypt(
-        firma_ecdsa,
-        padding.OAEP( # OAEP (Optimal Asymetric Encryptation Padding)  -->  padding.PSS (probabilistic signature schema)
-            mgf=padding.MGF1(algorithm=hashes.SHA256()),
-            algorithm=hashes.SHA256(),
-            label=None
-        )
-    )
-    # print (cifrado) # imprime la firma cifrada pero en hexadecimal
-    return firma_ecdsa_cifrada
-
-
-# descifrar firma ecdsa con RSA
-def descifrar_rsa(clave_privada_rsa, firma_cifrada):
-    firma_descifrada= clave_privada_rsa.decrypt(
-        firma_cifrada,
-        padding.OAEP( # OAEP (Optimal Asymetric Encryptation Padding)  -->  padding.PSS (probabilistic signature schema)
-            mgf=padding.MGF1(algorithm=hashes.SHA256()),
-            algorithm=hashes.SHA256(),
-            label=None
-        )
-    )
-    return firma_descifrada
-
-
 
 
 
@@ -80,20 +38,6 @@ def firma_verificacion_ecdsa(ruta_archivo):
     # firmar archivo con ECDSA
     firma_ecdsa = firmar_ecdsa(clave_privada_ecdsa, datos_archivo)
     print(f"Firma ECDSA generada: {firma_ecdsa.hex()}")
-
-
-
-
-    # Cifrar la firma ECDSA con RSA
-    firma_ecdsa_cifrada = cifrar_rsa(clave_publica_rsa, firma_ecdsa)
-    print(f"Firma ECDSA cifrada con RSA: {firma_ecdsa_cifrada.hex()}")
-    # Descifrar la firma ECDSA con RSA
-    firma_ecdsa_descifrada = descifrar_rsa(clave_privada_rsa, firma_ecdsa_cifrada)
-    print(f"Firma ECDSA descifrada con RSA: {firma_ecdsa_descifrada.hex()}")
-
-
-
-
 
 
     # verificar firma con ECDSA
