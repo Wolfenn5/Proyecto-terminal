@@ -1,7 +1,6 @@
 from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.backends import default_backend
-from ecdsa import SigningKey, VerifyingKey, NIST384p  # biblioteca ecdsa
-
+from ecdsa import SigningKey, NIST384p  # biblioteca ecdsa
+from checksum import findChecksum, checkReceiverChecksum
 
 """ 
 Se almacenara en binario (bytes) por lo siguiente:
@@ -16,6 +15,33 @@ tabla_hash = {}
 # Forma del diccionario:
 # hash de archivo1 : firma ECDSA del archivo1
 # hash de archivo2 : firma ECDSA del archivo2
+
+
+from checksum import findChecksum, checkReceiverChecksum  # Importar funciones
+
+def aplicar_checksum_a_hash(hash_final):
+    # Convertir el hash a binario (porque esta en bytes porque asi lo maneja cryptography hashes)
+    hash_binario= ''.join(format(byte, '08b') for byte in hash_final)
+    k= 8  # Longitud de bloque en bits (por defecto debido al script)
+    
+
+    # Calcular checksum del hash
+    checksum= findChecksum(hash_binario, k)
+    print("Checksum calculado del hash:", checksum)
+    
+
+    # Verificar el checksum
+    receiver_checksum= checkReceiverChecksum(hash_binario, k, checksum)
+    print("Checksum del receptor:", receiver_checksum)
+    
+
+
+    # Verificar si el resultado final es valido
+    if int(receiver_checksum, 2) == 0:
+        print("Checksum válido. No se detectaron errores.")
+    else:
+        print("Checksum inválido. Se detectaron errores.")
+
 
 
 
@@ -61,6 +87,10 @@ def firma_verificacion_ecdsa(ruta_archivo):
 
 
 
+    # se le agrega una suma de verificacion al hash generado
+    aplicar_checksum_a_hash(hash_final_del_archivo)
+
+
 
     # firmar archivo con ECDSA y guardar en tabla hash
     firma_ecdsa = firmar_ecdsa(clave_privada_ecdsa, datos_archivo)
@@ -97,6 +127,8 @@ def firma_verificacion_ecdsa(ruta_archivo):
     # hash_archivo_modif = hashes.Hash(hashes.SHA256())
     # hash_archivo_modif.update(datos_archivo_modificados)
     # hash_final_del_archivo_recalculado = hash_archivo_modif.finalize()
+
+    # aplicar_checksum_a_hash(hash_final_del_archivo)
 
     # Si de alguna forma se roban el hash, aun asi se verifica la firma
     if hash_final_del_archivo_recalculado in tabla_hash:
