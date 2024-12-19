@@ -17,9 +17,7 @@ tabla_hash = {}
 # hash de archivo2 : firma ECDSA del archivo2
 
 
-from checksum import findChecksum, checkReceiverChecksum  # Importar funciones
-
-def aplicar_checksum_a_hash(hash_final):
+def aplicar_checksum_a_hash(hash_final, checksum_del_hash_proporcionado=None):
     # Convertir el hash a binario (porque esta en bytes porque asi lo maneja cryptography hashes)
     hash_binario= ''.join(format(byte, '08b') for byte in hash_final)
     k= 8  # Longitud de bloque en bits (por defecto debido al script)
@@ -30,19 +28,29 @@ def aplicar_checksum_a_hash(hash_final):
     print("Checksum calculado del hash:", checksum)
     
 
+    # Si se proporciona un checksum a verificar se compara para ver si es como el original
+    # if checksum_del_hash_proporcionado is not None: # si se da uno (que el checksum proporionado exista y por tanto no este vacio)
+    #     if checksum != checksum_del_hash_proporcionado:
+    #         print("Checksum invalido. Error, posible infiltracion.")
+    #         return False
+    #     else:
+    #         print("Checksum valido. No se detectaron errores.")
+    #         return True
+        
+
     # Verificar el checksum
     receiver_checksum= checkReceiverChecksum(hash_binario, k, checksum)
     print("Checksum del receptor:", receiver_checksum)
-    
+
 
 
     # Verificar si el resultado final es valido
     if int(receiver_checksum, 2) == 0:
-        print("Checksum válido. No se detectaron errores.")
+        print("Checksum validado. No se detectaron errores.")
+        return checksum
     else:
-        print("Checksum inválido. Se detectaron errores.")
-
-
+        print("Checksum invalido. Se detectaron errores.")
+        return None
 
 
 # generar claves ecdsa
@@ -88,7 +96,7 @@ def firma_verificacion_ecdsa(ruta_archivo):
 
 
     # se le agrega una suma de verificacion al hash generado
-    aplicar_checksum_a_hash(hash_final_del_archivo)
+    checksum_del_hash= aplicar_checksum_a_hash(hash_final_del_archivo)
 
 
 
@@ -102,7 +110,13 @@ def firma_verificacion_ecdsa(ruta_archivo):
 
     # Verificar el hash con la tabla hash
     print("\nVerificando que el hash del archivo coinicida con la tabla hash:")
-    # Se vuelve a calcular el hash 
+
+
+
+
+
+    #------------ Se vuelve a calcular el hash para ver si ha cambiado o sigue siendo el mismo ------------#
+
     hash_archivo_verif = hashes.Hash(hashes.SHA256())
     hash_archivo_verif.update(datos_archivo)
     hash_final_del_archivo_recalculado = hash_archivo_verif.finalize()
@@ -118,21 +132,45 @@ def firma_verificacion_ecdsa(ruta_archivo):
 
 
 
-    # simulando modificacion en el archivo
+
+
+    #----------------- simulando modificacion en el archivo -----------------#
+
+
     datos_archivo_modificados = datos_archivo + b"modificacion" # "modificacion" se va directo a cadena de bytes del archivo
     print("\n\n\nSimulando alteracion en el archivo:")
 
+
     # simulando que el hash cambia y no coincida en la tabla
     # print("Si el hash cambia:")
+    
     # hash_archivo_modif = hashes.Hash(hashes.SHA256())
     # hash_archivo_modif.update(datos_archivo_modificados)
     # hash_final_del_archivo_recalculado = hash_archivo_modif.finalize()
 
-    # aplicar_checksum_a_hash(hash_final_del_archivo)
 
-    # Si de alguna forma se roban el hash, aun asi se verifica la firma
+
+    # Verificar el checksum del hash por segunda vez 
+    comprobar_checksum = aplicar_checksum_a_hash(hash_final_del_archivo_recalculado, checksum_del_hash)
+    if  comprobar_checksum == checksum_del_hash:
+        print("El checksum del hash recalculado es el mismo que el hash original. Continuando verificación.")
+    else:
+        print("El checksum del hash recalculado es distinto al del hash original. Posible archivo alterado.")
+
+
+
+    # Si de alguna forma se roban el hash, aun asi se verifica el checksum y la firma 
     if hash_final_del_archivo_recalculado in tabla_hash:
         print("Si se robaron el hash:")
+
+        # Se comprueba si el checksum del hash recalculado es igual al del hash original
+        comprobar_checksum = aplicar_checksum_a_hash(hash_final_del_archivo_recalculado, checksum_del_hash)
+        if  comprobar_checksum == checksum_del_hash:
+            print("El checksum del hash recalculado es el mismo que el hash original. Continuando verificacion.")
+        else:
+            print("El checksum del hash recalculado es distinto al del hash original. Posible infiltracion.")
+
+
         print("El hash del archivo coincide con la tabla hash. Verificando firma ECDSA:")
         verificar_ecdsa(clave_publica_ecdsa, datos_archivo_modificados, tabla_hash[hash_final_del_archivo_recalculado])
     else:
