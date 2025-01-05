@@ -1,5 +1,8 @@
 from cryptography.hazmat.primitives import hashes
-from ecdsa import SigningKey, NIST384p  # biblioteca ecdsa
+from cryptography.hazmat.primitives import padding
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
+import os
+from ecdsa import SigningKey, NIST384p  
 from checksum import findChecksum, checkReceiverChecksum
 
 """ 
@@ -15,6 +18,78 @@ tabla_hash = {}
 # Forma del diccionario:
 # hash de archivo1 : firma ECDSA del archivo1
 # hash de archivo2 : firma ECDSA del archivo2
+
+
+
+
+"""----------------------CIFRADO AES----------------------"""
+
+# clave de cifrado AES (clave generada de forma aleatoria usando el SO)
+clave_aes= os.urandom(32)  # clave de 256 bits (AES-256)
+
+
+
+# funcion para cifrar datos usando AES
+def cifrar_datos_aes(datos):
+    # generar vector de inicializacion (aleatorio)
+    vector_inicializacion= os.urandom(16)
+    
+
+    # crear objeto de cifrado AES en modo CBC (encadenamiento de bloques de cifrado)
+    cifrador= Cipher(algorithms.AES(clave_aes), modes.CBC(vector_inicializacion))
+    encriptador= cifrador.encryptor()
+    
+
+    # asegurar que los datos sean multiplos de 16 bytes/128 bits (tamaño de bloque de AES)
+    relleno_padding= padding.PKCS7(128).padder()
+    datos_paddeados= relleno_padding.update(datos) + relleno_padding.finalize()
+    
+
+    # Cifrar los datos
+    datos_cifrados= encriptador.update(datos_paddeados) + encriptador.finalize()
+    
+
+    return vector_inicializacion + datos_cifrados  # el vector se agrega al inicio de los datos porque es la llave necesaria al ser cifrado simetrico
+
+
+
+
+
+# funcion para descifrar datos usando AES
+def descifrar_datos_aes(datos_cifrados):
+    # obtener el vector de inicializacion de los primeros 16 bytes/128 bits
+    vector_inicializacion= datos_cifrados[:16]
+
+
+    # el resto del cifrado ya no contiene el vector
+    datos_cifrados= datos_cifrados[16:]
+    
+
+    # crear objeto de descifrado AES en modo CBC (encadenamiento de bloques de cifrado)
+    cifrador= Cipher(algorithms.AES(clave_aes), modes.CBC(vector_inicializacion))
+    encriptador= cifrador.decryptor()
+    
+
+    # Descifrar los datos
+    datos_descifrados= encriptador.update(datos_cifrados) + encriptador.finalize()
+    
+
+    # eliminar el padding
+    desrelleno= padding.PKCS7(128).unpadder()
+    datos_descifrados= desrelleno.update(datos_descifrados) + desrelleno.finalize()
+    
+
+
+    return datos_descifrados
+
+
+"""----------------------CIFRADO AES----------------------"""
+
+
+
+
+
+
 
 
 def aplicar_checksum_a_hash(hash_final, checksum_del_hash_proporcionado=None):
@@ -83,15 +158,26 @@ def firma_verificacion_ecdsa(ruta_archivo):
 
 
 
-    # Calcular hash del archivo
+
+    # Cifrar el archivo
+    datos_archivo_cifrado = cifrar_datos_aes(datos_archivo)
+    print("ARCHIVO CIFRADO:\n")
+    # print(datos_archivo_cifrado)
+
+
+
+
+
+
+    # Calcular hash del archivo cifrado
     hash_archivo = hashes.Hash(hashes.SHA256())
-    hash_archivo.update(datos_archivo) # para procesar en partes (bloques) si el archivo es muy grande
+    hash_archivo.update(datos_archivo_cifrado) # para procesar en partes (bloques) si el archivo es muy grande
     # por ejemplo: 
     # hash_archivo.update(b"parte1")
     # hash_archivo.update(b"parte2")
     # al final seria algo tipo: hash_final = (b"parte1" + b"parte2") por eso se usa finalize
     hash_final_del_archivo = hash_archivo.finalize() # hash_final es un valor en bytes
-    print("Hash del archivo:", hash_final_del_archivo.hex()) 
+    print("Hash del archivo cifrado:", hash_final_del_archivo.hex()) 
 
 
 
@@ -101,7 +187,7 @@ def firma_verificacion_ecdsa(ruta_archivo):
 
 
     # firmar archivo con ECDSA y guardar en tabla hash
-    firma_ecdsa = firmar_ecdsa(clave_privada_ecdsa, datos_archivo)
+    firma_ecdsa = firmar_ecdsa(clave_privada_ecdsa, datos_archivo_cifrado)
     tabla_hash[hash_final_del_archivo] = firma_ecdsa
     print("Firma ECDSA generada:",firma_ecdsa.hex())
 
@@ -118,13 +204,13 @@ def firma_verificacion_ecdsa(ruta_archivo):
     #------------ Se vuelve a calcular el hash para ver si ha cambiado o sigue siendo el mismo ------------#
 
     hash_archivo_verif = hashes.Hash(hashes.SHA256())
-    hash_archivo_verif.update(datos_archivo)
+    hash_archivo_verif.update(datos_archivo_cifrado)
     hash_final_del_archivo_recalculado = hash_archivo_verif.finalize()
 
     # Se compara el hash calculado con el que ya estaba en la tabla
     if hash_final_del_archivo_recalculado in tabla_hash:
         print("El hash del archivo coincide con la tabla hash. Verificando firma ECDSA:")
-        verificar_ecdsa(clave_publica_ecdsa, datos_archivo, tabla_hash[hash_final_del_archivo_recalculado])
+        verificar_ecdsa(clave_publica_ecdsa, datos_archivo_cifrado, tabla_hash[hash_final_del_archivo_recalculado])
     else:
         print("El hash del archivo no coincide con la tabla hash. Archivo alterado.")
 
@@ -136,6 +222,7 @@ def firma_verificacion_ecdsa(ruta_archivo):
 
     #----------------- simulando modificacion en el archivo -----------------#
 
+    # Aqui no se podrian usar los datos_archivo_cifrado porque no tiene caso ver que el cifrado sea identico, mas bien el archivo en si mismo pero para fines practicos, si se podria verificar tambien datos_archivo_cifrado
 
     datos_archivo_modificados = datos_archivo + b"modificacion" # "modificacion" se va directo a cadena de bytes del archivo
     print("\n\n\nSimulando alteracion en el archivo:")
