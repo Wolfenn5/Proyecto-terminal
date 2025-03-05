@@ -285,9 +285,15 @@ def firma_verificacion_exe(ruta_exe):
 
 
 # Definir las rutas de los archivos
-ruta_imagen = "D:\\Documentos\\UAM\\PT\\Python\\Imagen.jpg"  #Imagen2.png
-ruta_doc = "D:\\Documentos\\UAM\\PT\\Python\\PT_Planeacion.pdf"  
-ruta_exe = "D:\\Documentos\\UAM\\PT\\Python\\binario.exe"  
+# ruta_imagen = "D:\\Documentos\\UAM\\PT\\Python\\Imagen.jpg"  #Imagen2.png
+# ruta_doc = "D:\\Documentos\\UAM\\PT\\Python\\PT_Planeacion.pdf"  
+# ruta_exe = "D:\\Documentos\\UAM\\PT\\Python\\binario.exe"  
+
+# Directorio MacOS
+ruta_imagen= "/Users/rober/Documents/Repositorios/Proyecto-Terminal/Imagen.jpg"
+ruta_doc= "/Users/rober/Documents/Repositorios/Proyecto-Terminal/PT_Planeacion.pdf"
+ruta_exe= "/Users/rober/Documents/Repositorios/Proyecto-Terminal/binario.exe"
+
 
 # imagen
 print("Imagen jpg:")
