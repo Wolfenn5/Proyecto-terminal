@@ -45,10 +45,11 @@ mensaje_descifrado_bytes= clave_privada.decrypt( # se descifra con la clave priv
     )
 )
 
-mensaje_descifrado= mensaje_descifrado_bytes.decode('utf-8')  # Convertir de bytes a cadena
 
 print("El mensaje original aun sin cifrar es:", mensaje)
 print("\nMensaje cifrado en bytes:", mensaje_cifrado) # esta linea va a imprimir el mensaje pero en bytes
 mensaje_cifrado_hex = mensaje_cifrado.hex() # convierte el mensaje cifrado a hexadecimal solo para visualizacion
 print("\nMensaje cifrado en hexadecimal:", mensaje_cifrado_hex) # imprime el mensaje pero ya cifrado y en hexadecimal
+
+mensaje_descifrado= mensaje_descifrado_bytes.decode('utf-8')  # Convertir de bytes a cadena
 print("\nMensaje descifrado:", mensaje_descifrado)
