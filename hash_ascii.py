@@ -1,20 +1,20 @@
 import hashlib
 
-def hash_ascii(s):
+def hash_ascii(cadena):
     hash_calculado= 0
-    for char in s:
-        hash_calculado= hash_calculado + ord(char)  # suma los valores ASCII de los caracteres
+    for char in cadena: # para cada caracter que esta en la cadena 
+        hash_calculado= hash_calculado + ord(char)  # suma los valores ASCII de los caracteres de la cadena
     return hash_calculado  
-  
 
-palabra= "hola" # h->104, o->111, l->l108, a->97   
+palabra= "hola" # los valores ASCII de cada caracter de la cadena ó palabra "hola" son: 
+# h->104 
+# o->111 
+# l->l108
+# a->97   
 
+# Se obtiene el valor hash calculado a partir de la funcion hash implementada sumando los valores ASCII
+valor_hash_palabra= hash_ascii(palabra) # 104+111+1108+97= 420
 
-"""Hash ascii"""
-valor_hash= hash_ascii(palabra) # 104+111+1108+97= 420
-
-
-"""Hash SHA-256"""
-#valor_hash= hashlib.sha256(palabra.encode()).hexdigest() # hash con SHA-256 y resultado en hexadecimal
-print(f'El valor hash de "{palabra}" es: {valor_hash}')
+# Imprimir el valor hash calculado
+print(f'El valor hash de "{palabra}" es: {valor_hash_palabra}')
 
