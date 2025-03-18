@@ -4,13 +4,6 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from cryptography.hazmat.primitives.asymmetric import padding
 
 
-"""
-Para PT3, revisar mgf1 por entrada de la semilla
-concatenacion de hashes hasta la longitud de la mascara y
-mascara resultante con la semilla para el padding OAEP
-
-"""
-
 # clave privada RSA (descifrado y firma digital)
 clave_privada= rsa.generate_private_key( # para descifrado y firma digital
     public_exponent=65537, # exponente publico o de descifrado, es una constante ya establecida en RSA
