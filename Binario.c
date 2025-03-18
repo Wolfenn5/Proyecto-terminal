@@ -1,3 +1,5 @@
+/* Este codigo no forma parte del proyecto terminal, solo se utilizo para generar un archivo de extension .exe y poder realizar pruebas sobre el*/
+
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
