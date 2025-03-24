@@ -84,7 +84,7 @@ print(tabla_hash_abierta.tabla)
 
 
 # Hashing Cerrado: Prueba Lineal
-print("\nPrueba Lineal:")
+print("\nHashing cerrado: Prueba Lineal:")
 tabla_prueba_lineal = TablaHash(5)
 tabla_prueba_lineal.insertar_prueba_lineal(3) # posicion 3
 tabla_prueba_lineal.insertar_prueba_lineal(8) # 8 mod 5= 3 entonces hace colision con 3 asi que se va a la sig posicion disponible; 3+1= 4 posicion
@@ -92,7 +92,7 @@ tabla_prueba_lineal.insertar_prueba_lineal(13) # 13 mod 5= 3 entonces hace colis
 print(tabla_prueba_lineal.tabla)  
 
 # Hashing Cerrado: Prueba Cuadrática
-print("\nPrueba Cuadrática:")
+print("\nHashing cerrado: Prueba Cuadrática:")
 tabla_prueba_cuadratica = TablaHash(5)
 tabla_prueba_cuadratica.insertar_prueba_cuadratica(3) # posicion 3
 tabla_prueba_cuadratica.insertar_prueba_cuadratica(8) # 8 mod 5= 3 entonces hace colision con 3 asi que se va a la sig posicion disponible; 3+1^2= 4 posicion
@@ -100,7 +100,7 @@ tabla_prueba_cuadratica.insertar_prueba_cuadratica(13) # 13 mod 5= 3 entonces ha
 print(tabla_prueba_cuadratica.tabla) 
 
 # Hashing Cerrado: Doble Hashing h2(x) = 1 + (x mod 4)
-print("\nDoble Hashing:")
+print("\nHashing cerrado: Doble Hashing:")
 tabla_doble_hash = TablaHash(5)
 tabla_doble_hash.insertar_doble_hash(3) # posicion 3 
 tabla_doble_hash.insertar_doble_hash(8) # 8(3+1×h2(8)) -> (3+1×2) mod 5= 0 posicion
