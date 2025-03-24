@@ -14,12 +14,10 @@ mensaje = b"Este es un mensaje importante."
 hash_mensaje = hashlib.sha256(mensaje).digest()
 # Firmar el hash del mensaje usando la clave privada
 firma = clave_privada.sign(hash_mensaje)
-# Simulación de verificación (el receptor usa la clave pública para verificar)
-try:
-    # Verificar la firma comparando el hash firmado con el hash del mensaje original
-    clave_publica.verify(firma, hash_mensaje)
-    print("Firma verificada correctamente.")
-    print("La firma es: ",firma.hex()) # si se desea ver la firma en bytes solo poner firma en vez de firma.hex()
-    print("longitud de la firma: ", len(firma.hex())) # en hexadecimal seran 192 caracteres
-except:
-    print("Firma invalida.")
+
+# Verificar la firma comparando el hash firmado con el hash del mensaje original
+clave_publica.verify(firma, hash_mensaje)
+print("Firma verificada correctamente.")
+print("La firma es: ",firma.hex()) # si se desea ver la firma en bytes solo poner firma en vez de firma.hex()
+print("longitud de la firma: ", len(firma.hex())) # en hexadecimal seran 192 caracteres
+
