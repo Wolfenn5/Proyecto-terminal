@@ -5,6 +5,7 @@ import os
 from ecdsa import SigningKey, NIST384p  
 from checksum import findChecksum, checkReceiverChecksum
 
+
 """ 
 Se almacenara en binario (bytes) por lo siguiente:
 -> Es mas eficiente y compatible para calculos (en criptografia) y al hacer las comparaciones
@@ -266,43 +267,42 @@ def firma_verificacion_ecdsa(ruta_archivo):
 
 
 
-# firma y verificacion 
 
-# imagen
-def firma_verificacion_imagen(ruta_imagen):
-    firma_verificacion_ecdsa(ruta_imagen)
 
-# pdf
-def firma_verificacion_documento(ruta_doc):
-    firma_verificacion_ecdsa(ruta_doc)
+#--------------------- En esta seccion se define la ruta de los archivos, dependiendo de en que sistema operativo se este trabajando --------------------#
+# Ademas se pueden añadir distintos tipos de archivos como se desee, solo basta con definir la ruta y hacer el llamado a la funcion, donde el argumento va a ser la ruta previamente definida
 
-# exe
-def firma_verificacion_exe(ruta_exe):
-    firma_verificacion_ecdsa(ruta_exe)
+
+# Ejemplo Windows
+# --> ruta_de_archivo_en_windows= "Disco:\\Carpeta1\\Subcarpeta1\\Subcarpeta2\\Nombre_Del_archivo.extension_del_archivo"
+
+# Ejemplo MacOS
+# --> ruta_de_archivo_en_MacOs= "/Users/Nombre_De_Usuario/Carpeta1/Subcarpeta2/Nombre_Del_archivo.extension_del_archivo"
 
 
 
+# Directorios Propios utilizados en sistema Windows
+ruta_imagen = "D:\\Documentos\\UAM\\PT\\Python\\Imagen.jpg"  #Imagen2.png
+ruta_doc = "D:\\Documentos\\UAM\\PT\\Python\\PT_Planeacion.pdf"  
+ruta_exe = "D:\\Documentos\\UAM\\PT\\Python\\binario.exe"  
+
+# Directorios Propios utilizados en sistema MacOs
+# ruta_imagen= "/Users/rober/Documents/Repositorios/Proyecto-Terminal/Imagen.jpg"
+# ruta_doc= "/Users/rober/Documents/Repositorios/Proyecto-Terminal/PT_Planeacion.pdf"
+# ruta_exe= "/Users/rober/Documents/Repositorios/Proyecto-Terminal/binario.exe"
 
 
-# Definir las rutas de los archivos
-# ruta_imagen = "D:\\Documentos\\UAM\\PT\\Python\\Imagen.jpg"  #Imagen2.png
-# ruta_doc = "D:\\Documentos\\UAM\\PT\\Python\\PT_Planeacion.pdf"  
-# ruta_exe = "D:\\Documentos\\UAM\\PT\\Python\\binario.exe"  
-
-# Directorio MacOS
-ruta_imagen= "/Users/rober/Documents/Repositorios/Proyecto-Terminal/Imagen.jpg"
-ruta_doc= "/Users/rober/Documents/Repositorios/Proyecto-Terminal/PT_Planeacion.pdf"
-ruta_exe= "/Users/rober/Documents/Repositorios/Proyecto-Terminal/binario.exe"
 
 
+# Llamado a las funciones de firma y verificacion
 # imagen
 print("Imagen jpg:")
-firma_verificacion_imagen(ruta_imagen)
+firma_verificacion_ecdsa(ruta_imagen)
 
 # pdf
 print("\nDocumento PDF:")
-firma_verificacion_documento(ruta_doc)
+firma_verificacion_ecdsa(ruta_doc)
 
 # exe
 print("\nArchivo exe:")
-firma_verificacion_exe(ruta_exe)
+firma_verificacion_ecdsa(ruta_exe)
