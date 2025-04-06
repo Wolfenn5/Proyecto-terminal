@@ -67,4 +67,4 @@ def sha256(message):
 
 # mensaje a hashear con SHA-256
 mensaje = "hola mundo"
-print(sha256(mensaje))
+print(f"El hash SHA-256 de", mensaje," sin utilizar bibliotecas criptograficas es:\n", sha256(mensaje))
