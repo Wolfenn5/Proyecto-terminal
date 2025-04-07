@@ -16,5 +16,5 @@ palabra= "hola" # los valores ASCII de cada caracter de la cadena ó palabra "ho
 valor_hash_palabra= hash_ascii(palabra) # 104+111+1108+97= 420
 
 # Imprimir el valor hash calculado
-print(f'El valor hash de "{palabra}" es: {valor_hash_palabra}')
+print(f'El valor hash ASCII de "{palabra}" es: {valor_hash_palabra}')
 
