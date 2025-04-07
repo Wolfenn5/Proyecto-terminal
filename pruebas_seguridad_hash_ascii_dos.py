@@ -10,7 +10,7 @@ def hash_ascii(s):
         hash_calculado += ord(char)  # suma los valores ASCII de los caracteres
     return hash_calculado
 
-# Función para demostrar colisiones
+# 1. Función para demostrar colisiones
 # Es buscar una palabra que genere el mismo hash que la palabra original
 def demostrar_colisiones():
     hashes = {}
@@ -21,7 +21,7 @@ def demostrar_colisiones():
         else:
             hashes[hash_valor] = palabra # se almacena la palabra que dio colision y el hash correspondiente
 
-# Función para demostrar ataques de preimagen}
+# 2. Función para demostrar ataques de preimagen}
 # Es encontrar una palabra que tenga el mismo hash objetivo (hash de la palabra original) pero ya conociendo el hash de la palabra original
 def ataque_preimagen(hash_objetivo):
     for palabra in ["hola", "adios", "mundo", "python"]: # lista de palabras a probar, se pueden añadir mas
@@ -31,7 +31,7 @@ def ataque_preimagen(hash_objetivo):
     print(f"No se encontró preimagen para el hash {hash_objetivo}")
     return None
 
-# Función para demostrar ataques de segunda preimagen
+# 3. Función para demostrar ataques de segunda preimagen
 # Es buscar otra palabra distinta que tenga el mismo hash que la palabra original (ademas de una previamente conocida de la primer preimagen)
 def ataque_segunda_preimagen(palabra_original):
     hash_original = hash_ascii(palabra_original) # se calcula el hash de la palabra original
@@ -42,7 +42,7 @@ def ataque_segunda_preimagen(palabra_original):
     print(f"No se encontró segunda preimagen para la palabra '{palabra_original}'")
     return None
 
-# Función para demostrar ataques de fuerza bruta
+# 4. Función para demostrar ataques de fuerza bruta
 # Es probar todas las entradas posibles hasta encontrar alguna que produzca el hash deseado
 def ataque_fuerza_bruta(hash_objetivo):
     caracteres = string.ascii_lowercase # definir los caracteres posibles en letras minusculas
@@ -54,14 +54,14 @@ def ataque_fuerza_bruta(hash_objetivo):
     print(f"No se encontró entrada usando fuerza bruta para el hash {hash_objetivo}")
     return None
 
-# Función para demostrar ataques de propuesta de entrada
+# 5. Función para demostrar ataques de propuesta de entrada
 # Es variar la entrada para intentar producir un hash especifico (por ejemplo que sea de n bits o m longitud por mencionar algunas)
 def ataque_propuesta_entrada(palabra_original):
     hash_original = hash_ascii(palabra_original) # se calcula el hash de la palabra original
     for _ in range(1000):  # Prueba con 1000 variaciones aleatorias
         propuesta = ''.join(random.choices(string.ascii_lowercase, k=len(palabra_original)))
         if hash_ascii(propuesta) == hash_original: # si se encuentra una variacion con el mismo hash
-            print(f"Propuesta de entrada encontrada: '{propuesta}' también tiene el hash {hash_original}")
+            print(f"Propuesta de entrada encontrada: '{propuesta}' también tiene el hash {hash_original}\n")
             return propuesta
     print(f"No se encontró propuesta de entrada para la palabra '{palabra_original}'")
     return None
@@ -70,7 +70,7 @@ def ataque_propuesta_entrada(palabra_original):
 
 # Cadena a probar
 palabra = "hola" # se puede escribir cualquier cadena que se desee hacer pruebas
-print(f'Hash ASCII de "{palabra}" es: {hash_ascii(palabra)}')
+print(f'\nHash ASCII de "{palabra}" es: {hash_ascii(palabra)}')
 
 
 # Pruebas 
@@ -85,13 +85,13 @@ print(f'Probando ataque de preimagen para el hash {hash_a_probar}')
 ataque_preimagen(hash_a_probar)
 
 # Ataques de segunda preimagen
-print(f'Probando ataque de segunda preimagen para la palabra "{palabra}"')
+print(f'\nProbando ataque de segunda preimagen para la palabra "{palabra}"')
 ataque_segunda_preimagen(palabra)
 
 # Ataques de fuerza bruta
-print(f'Probando ataque de fuerza bruta para el hash {hash_a_probar}')
+print(f'\nProbando ataque de fuerza bruta para el hash {hash_a_probar}')
 ataque_fuerza_bruta(hash_a_probar)
 
 # Ataques de propuesta de entrada
-print(f'Probando ataque de propuesta de entrada para la palabra "{palabra}"')
+print(f'\nProbando ataque de propuesta de entrada para la palabra "{palabra}"')
 ataque_propuesta_entrada(palabra)
