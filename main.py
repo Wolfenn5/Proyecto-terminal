@@ -225,7 +225,13 @@ def firma_verificacion_ecdsa(ruta_archivo):
 
     # Aqui no se podrian usar los datos_archivo_cifrado porque no tiene caso ver que el cifrado sea identico, mas bien el archivo en si mismo pero para fines practicos, si se podria verificar tambien datos_archivo_cifrado
 
-    datos_archivo_modificados = datos_archivo + b"modificacion" # "modificacion" se va directo a cadena de bytes del archivo
+    # Esto se utiliza para probar con el mismo archivo pero con esteganografia de "hola mundo"
+    with open(ruta_imagen_esteganografia, "rb") as archivoo:
+        datos_archivo_modificados = archivoo.read()
+
+
+    # Esta otra linea es en si lo que pasaria de forma interna con los bytes
+    #datos_archivo_modificados = datos_archivo + b"modificacion" # "modificacion" se va directo a cadena de bytes del archivo   
     print("\n\n\nSimulando alteracion en el archivo:")
 
 
@@ -282,14 +288,16 @@ def firma_verificacion_ecdsa(ruta_archivo):
 
 
 # Directorios Propios utilizados en sistema Windows
-ruta_imagen = "D:\\Documentos\\UAM\\PT\\Python\\Imagen.jpg"  #Imagen2.png
-ruta_doc = "D:\\Documentos\\UAM\\PT\\Python\\PT_Planeacion.pdf"  
-ruta_exe = "D:\\Documentos\\UAM\\PT\\Python\\binario.exe"  
+# ruta_imagen = "D:\\Documentos\\UAM\\PT\\Python\\Imagen.jpg"  
+# ruta_imagen_esteganografia = "D:\\Documentos\\UAM\\PT\\Python\\Imagen2.png"
+# ruta_doc = "D:\\Documentos\\UAM\\PT\\Python\\PT_Planeacion.pdf"  
+# ruta_exe = "D:\\Documentos\\UAM\\PT\\Python\\binario.exe"  
 
 # Directorios Propios utilizados en sistema MacOs
-# ruta_imagen= "/Users/rober/Documents/Repositorios/Proyecto-Terminal/Imagen.jpg"
-# ruta_doc= "/Users/rober/Documents/Repositorios/Proyecto-Terminal/PT_Planeacion.pdf"
-# ruta_exe= "/Users/rober/Documents/Repositorios/Proyecto-Terminal/binario.exe"
+ruta_imagen= "/Users/rober/Documents/Repositorios/Proyecto-Terminal/Imagen.jpg"
+ruta_imagen_esteganografia= "/Users/rober/Documents/Repositorios/Proyecto-Terminal/Imagen2.png"
+ruta_doc= "/Users/rober/Documents/Repositorios/Proyecto-Terminal/PT_Planeacion.pdf"
+ruta_exe= "/Users/rober/Documents/Repositorios/Proyecto-Terminal/binario.exe"
 
 
 
