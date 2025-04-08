@@ -23,36 +23,28 @@ tabla_hash = {}
 
 
 
-"""----------------------CIFRADO AES----------------------"""
-
+"""------------------------------------------CIFRADO AES------------------------------------------"""
 # clave de cifrado AES (clave generada de forma aleatoria usando el SO)
 clave_aes= os.urandom(32)  # clave de 256 bits (AES-256)
-
 
 
 # funcion para cifrar datos usando AES
 def cifrar_datos_aes(datos):
     # generar vector de inicializacion (aleatorio)
     vector_inicializacion= os.urandom(16)
-    
 
     # crear objeto de cifrado AES en modo CBC (encadenamiento de bloques de cifrado)
     cifrador= Cipher(algorithms.AES(clave_aes), modes.CBC(vector_inicializacion))
     encriptador= cifrador.encryptor()
-    
 
     # asegurar que los datos sean multiplos de 16 bytes/128 bits (tamaño de bloque de AES)
     relleno_padding= padding.PKCS7(128).padder()
     datos_paddeados= relleno_padding.update(datos) + relleno_padding.finalize()
-    
 
     # Cifrar los datos
     datos_cifrados= encriptador.update(datos_paddeados) + encriptador.finalize()
-    
 
     return vector_inicializacion + datos_cifrados  # el vector se agrega al inicio de los datos porque es la llave necesaria al ser cifrado simetrico
-
-
 
 
 
@@ -61,64 +53,40 @@ def descifrar_datos_aes(datos_cifrados):
     # obtener el vector de inicializacion de los primeros 16 bytes/128 bits
     vector_inicializacion= datos_cifrados[:16]
 
-
     # el resto del cifrado ya no contiene el vector
     datos_cifrados= datos_cifrados[16:]
     
-
     # crear objeto de descifrado AES en modo CBC (encadenamiento de bloques de cifrado)
     cifrador= Cipher(algorithms.AES(clave_aes), modes.CBC(vector_inicializacion))
     encriptador= cifrador.decryptor()
     
-
     # Descifrar los datos
     datos_descifrados= encriptador.update(datos_cifrados) + encriptador.finalize()
     
-
     # eliminar el padding
     desrelleno= padding.PKCS7(128).unpadder()
     datos_descifrados= desrelleno.update(datos_descifrados) + desrelleno.finalize()
     
-
-
     return datos_descifrados
 
 
-"""----------------------CIFRADO AES----------------------"""
 
 
 
 
-
-
-
-
+"""------------------------------------------CHECKSUM------------------------------------------"""
 def aplicar_checksum_a_hash(hash_final, checksum_del_hash_proporcionado=None):
     # Convertir el hash a binario (porque esta en bytes porque asi lo maneja cryptography hashes)
     hash_binario= ''.join(format(byte, '08b') for byte in hash_final)
     k= 8  # Longitud de bloque en bits (por defecto debido al script)
     
-
     # Calcular checksum del hash
     checksum= findChecksum(hash_binario, k)
     print("Checksum calculado del hash:", checksum)
-    
-
-    # Si se proporciona un checksum a verificar se compara para ver si es como el original
-    # if checksum_del_hash_proporcionado is not None: # si se da uno (que el checksum proporionado exista y por tanto no este vacio)
-    #     if checksum != checksum_del_hash_proporcionado:
-    #         print("Checksum invalido. Error, posible infiltracion.")
-    #         return False
-    #     else:
-    #         print("Checksum valido. No se detectaron errores.")
-    #         return True
         
-
     # Verificar el checksum
     receiver_checksum= checkReceiverChecksum(hash_binario, k, checksum)
     print("Checksum del receptor:", receiver_checksum)
-
-
 
     # Verificar si el resultado final es valido
     if int(receiver_checksum, 2) == 0:
@@ -129,17 +97,16 @@ def aplicar_checksum_a_hash(hash_final, checksum_del_hash_proporcionado=None):
         return None
 
 
+
+
 # generar claves ecdsa
 clave_privada_ecdsa= SigningKey.generate(curve=NIST384p)  # tipo de curva NIST384p
 clave_publica_ecdsa= clave_privada_ecdsa.get_verifying_key() # al generar la clave privada la clave publica se deriva multiplicando la clave privada por un punto generador en una curva elíptica. (P = d*G)
-
 
 # firmar con clave privada ECDSA
 def firmar_ecdsa(clave_privada_ecdsa, documento):
     firma_ecdsa= clave_privada_ecdsa.sign(documento)
     return firma_ecdsa # return para meter en tabla hash
-
-
 
 # verificar firma usando la clave publica ECDSA
 def verificar_ecdsa(clave_publica_ecdsa, documento, firma):
@@ -152,23 +119,17 @@ def verificar_ecdsa(clave_publica_ecdsa, documento, firma):
 
 
 
+
+"""------------------------------------------Funcion Principal que Firma los archivos, los verifica y autentifica------------------------------------------"""
 # firma, verificacion y simulacion de modificacion en archivo con ECDSA
 def firma_verificacion_ecdsa(ruta_archivo):
     with open(ruta_archivo, "rb") as archivo:
         datos_archivo= archivo.read()
 
-
-
-
     # Cifrar el archivo
     datos_archivo_cifrado = cifrar_datos_aes(datos_archivo)
     print("ARCHIVO CIFRADO:\n")
     # print(datos_archivo_cifrado)
-
-
-
-
-
 
     # Calcular hash del archivo cifrado
     hash_archivo = hashes.Hash(hashes.SHA256())
@@ -180,30 +141,19 @@ def firma_verificacion_ecdsa(ruta_archivo):
     hash_final_del_archivo = hash_archivo.finalize() # hash_final es un valor en bytes
     print("Hash del archivo cifrado:", hash_final_del_archivo.hex()) 
 
-
-
     # se le agrega una suma de verificacion al hash generado
     checksum_del_hash= aplicar_checksum_a_hash(hash_final_del_archivo)
-
-
 
     # firmar archivo con ECDSA y guardar en tabla hash
     firma_ecdsa = firmar_ecdsa(clave_privada_ecdsa, datos_archivo_cifrado)
     tabla_hash[hash_final_del_archivo] = firma_ecdsa
     print("Firma ECDSA generada:",firma_ecdsa.hex())
 
-
-
-
     # Verificar el hash con la tabla hash
     print("\nVerificando que el hash del archivo coinicida con la tabla hash:")
 
 
-
-
-
     #------------ Se vuelve a calcular el hash para ver si ha cambiado o sigue siendo el mismo ------------#
-
     hash_archivo_verif = hashes.Hash(hashes.SHA256())
     hash_archivo_verif.update(datos_archivo_cifrado)
     hash_final_del_archivo_recalculado = hash_archivo_verif.finalize()
@@ -217,31 +167,21 @@ def firma_verificacion_ecdsa(ruta_archivo):
 
 
 
-
-
-
-
     #----------------- simulando modificacion en el archivo -----------------#
-
     # Aqui no se podrian usar los datos_archivo_cifrado porque no tiene caso ver que el cifrado sea identico, mas bien el archivo en si mismo pero para fines practicos, si se podria verificar tambien datos_archivo_cifrado
-
-    # Esto se utiliza para probar con el mismo archivo pero con esteganografia de "hola mundo"
+    # Esta parte se utiliza para probar con el mismo archivo pero con esteganografia de "hola mundo"
     with open(ruta_imagen_esteganografia, "rb") as archivoo:
         datos_archivo_modificados = archivoo.read()
-
 
     # Esta otra linea es en si lo que pasaria de forma interna con los bytes
     #datos_archivo_modificados = datos_archivo + b"modificacion" # "modificacion" se va directo a cadena de bytes del archivo   
     print("\n\n\nSimulando alteracion en el archivo:")
 
-
-    # simulando que el hash cambia y no coincida en la tabla
+    # Se descomentan las lineas de abajo para simular que el hash si cambia
     # print("Si el hash cambia:")
-    
     # hash_archivo_modif = hashes.Hash(hashes.SHA256())
     # hash_archivo_modif.update(datos_archivo_modificados)
     # hash_final_del_archivo_recalculado = hash_archivo_modif.finalize()
-
 
 
     # Verificar el checksum del hash por segunda vez 
@@ -252,11 +192,9 @@ def firma_verificacion_ecdsa(ruta_archivo):
         print("El checksum del hash recalculado es distinto al del hash original. Posible archivo alterado.")
 
 
-
     # Si de alguna forma se roban el hash, aun asi se verifica el checksum y la firma 
     if hash_final_del_archivo_recalculado in tabla_hash:
         print("Si se robaron el hash:")
-
         # Se comprueba si el checksum del hash recalculado es igual al del hash original
         comprobar_checksum = aplicar_checksum_a_hash(hash_final_del_archivo_recalculado, checksum_del_hash)
         if  comprobar_checksum == checksum_del_hash:
@@ -269,6 +207,7 @@ def firma_verificacion_ecdsa(ruta_archivo):
         verificar_ecdsa(clave_publica_ecdsa, datos_archivo_modificados, tabla_hash[hash_final_del_archivo_recalculado])
     else:
         print("El hash del archivo no coincide con la tabla hash. Archivo alterado.")
+
 
 
 
