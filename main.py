@@ -1,9 +1,9 @@
-from cryptography.hazmat.primitives import hashes
-from cryptography.hazmat.primitives import padding
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-import os
-from ecdsa import SigningKey, NIST384p  
-from checksum import findChecksum, checkReceiverChecksum
+from cryptography.hazmat.primitives import hashes # funciones hash como SHA-256, SHA-512
+from cryptography.hazmat.primitives import padding # esquemas de relleno (padding) como PKCS7
+from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes # Cipher servira como clase principal para operaciones de cifrado/descifrado, algorithms para el algoritmo AES y modes contiene modos de operación para cifrado de bloques como CBC
+import os # para obtener la semilla de la clave simetrica AES
+from ecdsa import SigningKey, NIST384p  # para generar las firmas publica y privada utilizando la curva NIST384p
+from checksum import findChecksum, checkReceiverChecksum # importar las funciones del script checksum.py
 
 
 """ 
@@ -98,7 +98,7 @@ def aplicar_checksum_a_hash(hash_final, checksum_del_hash_proporcionado=None):
 
 
 
-
+"""------------------------------------------Generacion de clave publica y privada de curva eliptica (ECDSA) para la firma digital, junto con las funciones para firmar y verificar archivos------------------------------------------"""
 # generar claves ecdsa
 clave_privada_ecdsa= SigningKey.generate(curve=NIST384p)  # tipo de curva NIST384p
 clave_publica_ecdsa= clave_privada_ecdsa.get_verifying_key() # al generar la clave privada la clave publica se deriva multiplicando la clave privada por un punto generador en una curva elíptica. (P = d*G)
@@ -126,12 +126,12 @@ def firma_verificacion_ecdsa(ruta_archivo):
     with open(ruta_archivo, "rb") as archivo:
         datos_archivo= archivo.read()
 
-    # Cifrar el archivo
+    # Fase 1: Cifrar el archivo
     datos_archivo_cifrado = cifrar_datos_aes(datos_archivo)
     print("ARCHIVO CIFRADO:\n")
     # print(datos_archivo_cifrado)
 
-    # Calcular hash del archivo cifrado
+    # Fase 2: Calcular hash del archivo cifrado
     hash_archivo = hashes.Hash(hashes.SHA256())
     hash_archivo.update(datos_archivo_cifrado) # para procesar en partes (bloques) si el archivo es muy grande
     # por ejemplo: 
@@ -141,10 +141,10 @@ def firma_verificacion_ecdsa(ruta_archivo):
     hash_final_del_archivo = hash_archivo.finalize() # hash_final es un valor en bytes
     print("Hash del archivo cifrado:", hash_final_del_archivo.hex()) 
 
-    # se le agrega una suma de verificacion al hash generado
+    # Fase 3: Se le agrega una suma de verificacion al hash generado
     checksum_del_hash= aplicar_checksum_a_hash(hash_final_del_archivo)
 
-    # firmar archivo con ECDSA y guardar en tabla hash
+    # Fase 4: Firmar archivo con ECDSA y guardar en tabla hash
     firma_ecdsa = firmar_ecdsa(clave_privada_ecdsa, datos_archivo_cifrado)
     tabla_hash[hash_final_del_archivo] = firma_ecdsa
     print("Firma ECDSA generada:",firma_ecdsa.hex())
@@ -152,7 +152,7 @@ def firma_verificacion_ecdsa(ruta_archivo):
     # Verificar el hash con la tabla hash
     print("\nVerificando que el hash del archivo coinicida con la tabla hash:")
 
-
+    # Fase 5: Verificacion del archivo
     #------------ Se vuelve a calcular el hash para ver si ha cambiado o sigue siendo el mismo ------------#
     hash_archivo_verif = hashes.Hash(hashes.SHA256())
     hash_archivo_verif.update(datos_archivo_cifrado)
@@ -166,7 +166,7 @@ def firma_verificacion_ecdsa(ruta_archivo):
         print("El hash del archivo no coincide con la tabla hash. Archivo alterado.")
 
 
-
+    # Fase 6: Autenticar que si sea el archivo original y no haya sido manipulado
     #----------------- simulando modificacion en el archivo -----------------#
     # Aqui no se podrian usar los datos_archivo_cifrado porque no tiene caso ver que el cifrado sea identico, mas bien el archivo en si mismo pero para fines practicos, si se podria verificar tambien datos_archivo_cifrado
     # Esta parte se utiliza para probar con el mismo archivo pero con esteganografia de "hola mundo"
