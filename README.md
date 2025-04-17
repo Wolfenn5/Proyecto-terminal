@@ -47,7 +47,7 @@ Contiene las implementaciones de firma digital basada en curva eliptica que tien
 
 **Biblioteca cryptography** 
 
-Contiene las implementaciones de funciones hash criptograficas como SHA-256 que tiene como fin generar un identificador unico a un archivo y comprobar si ha sido manipulado o alterado. Puede instalarse mediante una terminal utilizando el siguiente comando:
+Contiene diversas implementaciones criptograficas entre las que se incluyen funciones hash como SHA-256 que tiene como fin generar un identificador unico a un archivo y comprobar si ha sido manipulado o alterado, cifrado simetrico y asimetrico para mantener oculta informacion por mencionar algunas. Puede instalarse mediante una terminal utilizando el siguiente comando:
 
     pip install cryptography
 
