@@ -2,7 +2,7 @@
 
 ## **Descripcion**
 
-El repositorio contiene scripts de Python que fueron desarrollados para el proyecto terminal de la carrera *Ingenieria en Computacion* de la *Universidad Autonoma Metropolitana Unidad Cuajimalpa* que inicio en el trimestre 24-P y finalizo en el trimestre 25-I. El cual se centro en el campo de ***Criptografía*** abarcando temas como funciones hash, tablas hash, firma digital asi como algoritmos de cifrado y descifrado de archivos.
+El repositorio contiene scripts de Python que fueron desarrollados para el proyecto terminal ***Algoritmo Criptográfico De Firma Digital Basado En Curva Elíptica Con Funciones Hash y Cifrado Simétrico AES*** de la carrera *Ingenieria en Computacion* de la *Universidad Autonoma Metropolitana Unidad Cuajimalpa* que inicio en el trimestre 24-P y finalizo en el trimestre 25-I. El cual se centro en el campo de ***Criptografía*** abarcando temas como funciones hash, tablas hash, firma digital asi como algoritmos de cifrado y descifrado de archivos.
 
 ## **Contenido** ##
 Este repositorio incluye la implementacion de diversos algoritmos criptograficos que sirvieron como base para el desarrollo del algoritmo principal **main.py** con la exepcion del script checksum.py el cual fue inspirado de https://www.geeksforgeeks.org/implementing-checksum-using-python/.
