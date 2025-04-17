@@ -8,6 +8,26 @@ El repositorio contiene scripts de Python que fueron desarrollados para el proye
 Este repositorio incluye la implementacion de diversos algoritmos criptograficos que sirvieron como base para el desarrollo del algoritmo principal **main.py** con la exepcion del script checksum.py el cual fue inspirado de https://www.geeksforgeeks.org/implementing-checksum-using-python/.
 Tambien se incluyen varios archivos de prueba con diferentes extensiones como jpg, png, exe y pdf.
 
+## **Bibliotecas Necesarias**
+
+Para ejecutar los scripts se recomienda utilizar **Python3** ya que al momento del desarrollo del proyecto, se utilizo Python 3.12.8 utilizando el IDE Visual Studio Code. Ademas son necesarias las siguientes bibliotecas adicionales.
+
+
+**Biblioteca ecdsa** 
+
+Contiene las implementaciones de firma digital basada en curva eliptica que tiene como fin la autenticacion y verificacion de archivos. Puede instalarse mediante una terminal utilizando el siguiente comando:
+
+    pip install ecdsa
+
+
+
+**Biblioteca cryptography** 
+
+Contiene diversas implementaciones criptograficas entre las que se incluyen funciones hash como SHA-256 que tiene como fin generar un identificador unico a un archivo y comprobar si ha sido manipulado o alterado, cifrado simetrico y asimetrico para mantener oculta informacion por mencionar algunas. Puede instalarse mediante una terminal utilizando el siguiente comando:
+
+    pip install cryptography
+
+
 ## **Instrucciones de uso**
 
 Para utilizar el script **main.py** es necesario indicar las rutas de los archivos a los que se desee aplicar la verificacion y autenticacion.
@@ -31,25 +51,6 @@ Para el sistema operativo MacOs se puede seguir la siguiente estructura
 Ejemplo de uso en MacOs:
 
     ruta_imagen = "/Users/wolfenn5/Documents/Papeles/Proyecto/Python/Imagen.jpg"
-
-## **Bibliotecas Necesarias**
-
-Para ejecutar los scripts se recomienda utilizar **Python3** ya que al momento del desarrollo del proyecto, se utilizo Python 3.12.8 utilizando el IDE Visual Studio Code. Ademas son necesarias las siguientes bibliotecas adicionales.
-
-
-**Biblioteca ecdsa** 
-
-Contiene las implementaciones de firma digital basada en curva eliptica que tiene como fin la autenticacion y verificacion de archivos. Puede instalarse mediante una terminal utilizando el siguiente comando:
-
-    pip install ecdsa
-
-
-
-**Biblioteca cryptography** 
-
-Contiene diversas implementaciones criptograficas entre las que se incluyen funciones hash como SHA-256 que tiene como fin generar un identificador unico a un archivo y comprobar si ha sido manipulado o alterado, cifrado simetrico y asimetrico para mantener oculta informacion por mencionar algunas. Puede instalarse mediante una terminal utilizando el siguiente comando:
-
-    pip install cryptography
 
 
 
