@@ -228,13 +228,13 @@ def firma_verificacion_ecdsa(ruta_archivo):
 
 # Directorios Propios utilizados en sistema Windows
 # ruta_imagen = "D:\\Documentos\\UAM\\PT\\Python\\Imagen.jpg"  
-# ruta_imagen_esteganografia = "D:\\Documentos\\UAM\\PT\\Python\\Imagen_hola_mundo.png"
+# ruta_imagen_esteganografia = "D:\\Documentos\\UAM\\PT\\Python\\Imagen_hola_mundo.jpg"
 # ruta_doc = "D:\\Documentos\\UAM\\PT\\Python\\PT_Planeacion.pdf"  
 # ruta_exe = "D:\\Documentos\\UAM\\PT\\Python\\binario.exe"  
 
 # Directorios Propios utilizados en sistema MacOs
 ruta_imagen= "/Users/rober/Documents/Repositorios/Proyecto-Terminal/Imagen.jpg"
-ruta_imagen_esteganografia= "/Users/rober/Documents/Repositorios/Proyecto-Terminal/Imagen_hola_mundo.png"
+ruta_imagen_esteganografia= "/Users/rober/Documents/Repositorios/Proyecto-Terminal/Imagen_hola_mundo.jpg"
 ruta_doc= "/Users/rober/Documents/Repositorios/Proyecto-Terminal/PT_Planeacion.pdf"
 ruta_exe= "/Users/rober/Documents/Repositorios/Proyecto-Terminal/binario.exe"
 
